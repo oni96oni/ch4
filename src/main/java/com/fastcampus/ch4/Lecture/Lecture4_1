@@ -16,3 +16,43 @@ MyBatis의 소개와 설정
         자바코드와 sql문이 섞여있는것을 분리!
             xml문서에다가 sql만 따로 떼어낸다. 그러면 자바코드도 간단해진다.
 
+    2.SqlSessionFactoryBean과 SqlSessionTemplate
+        SqlSessionFactory - SqlSession을 생성해서 제공
+            openSession() 호출하면 SqlSession을 만들어준다.
+        SqlSession - SQL 명령을 수행하는데 필요한 메서드 제공
+            둘다 인터페이스로 mybatis가 제공
+
+        SqlSessionFactoryBean - SqlSessionFactory를 Spring에서 사용하기 위한 빈! - root-context.xml에 빈등록을 해야한다.
+            factory bean 등록할때 mapper xml위치를 지정해주어야 한다. mapper는 sql들어있는 곳
+        SqlSessionTemplate - SQL명령을 수행하는데 필요한 메서드 제공 ★thread-safe -> SqlSessionTemplate를 이용해서 DAO를 작성하는데
+            DAO끼리 Template을 공유한다! 멀티 쓰레드에 안전하기 때문에 여러 쓰레드가 동시에 접근해도 괜찮다.
+
+    3.SqlSession의 주요 메서드
+        int insert(String statement)                    insert문을 실행하고, insert된 행의 갯수를 반환
+        int insert(String statement,Object parameter)
+            Object parameter로는 User객체, Map도 가능하다
+        int delete(String statement)                    delete문을 실행하고, delete된 행의 갯수를 반환
+        int delete(String statement,Object parameter)
+        int update(String statement)                    update문을 실행하고, update된 행의 갯수를 반환
+        int update(String statement,Object parameter)
+            int인 이유 : DB에 영향을 준 row수!
+        T selectOne(String statement)                               하나의 행을 반환하는 select에 사용, parameter로 SQL에 binding될 값 제공
+        T selectOne(String statement,Object parameter)
+        List<E> selectList(String statement)                        여러 행을 반환하는 select에 사용, parameter로 SQL에 binding될 값 제공
+        List<E> selectList(String statement,Object parameter)
+        Map<K,V> selectMap(String statement, String keyCol)         여러 행을 반환하는 select에 사용, keyCol에 Map의 Key로 사용할 컬럼 지정
+        Map<K,V> selectMap(String statement, String keyCol,Object parameter)
+
+    4.Mapper XML의 작성
+        자바코드에서 xml로 연결
+        namespace는 mapper들 끼리 구분만 되면 된다. mapper인터페이스가 있으면 컴파일타임에 조금 더 정확하게 해줄 수 있다. (실무에서 사용!)
+
+        BoardDto에는 getter가 있어야지
+
+        mybatis에서  java.lang.Integer를 int라고 별명을 지어놓았다.
+
+    5.<typeAliases>로 이름 짧게 하기 -> 별명짓기
+        너무 긴 Type들을 대신해서 짧게하기 위해서 별명을 붙일 수 있게 기능을 만듬
+        mybatis-config.xml파일에 alias = 별명 type = 실제이름 식으로 태그입력하면된다
+        별명은 대소문자 구별x 실제이름은 구별o
+
