@@ -3,19 +3,6 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.fastcampus.ch4.dao.BoardMapper">
-    <select id="select" parameterType="int" resultType="BoardDto">
-        select bno,
-               title,
-               content,
-               writer,
-               view_cnt,
-               comment_cnt,
-               reg_date,
-               up_date
-        from board
-        where bno= #{bno}
-    </select>
-
     <select id="count" resultType="int">
         SELECT count(*) FROM board
     </select>
@@ -46,10 +33,10 @@
         FROM board
     </sql>
 
-<!--    <select id="select" parameterType="int" resultType="BoardDto">-->
-<!--        <include refid="selectFromBoard"/>-->
-<!--        WHERE bno = #{bno}-->
-<!--    </select>-->
+    <select id="select" parameterType="int" resultType="BoardDto">
+        <include refid="selectFromBoard"/>
+        WHERE bno = #{bno}
+    </select>
 
     <select id="selectPage" parameterType="map" resultType="BoardDto">
         <include refid="selectFromBoard"/>
