@@ -75,11 +75,12 @@ public class LoginController {
 
         try {
             user = userDao.selectUser(id);
+//            user = userDao.selectUser2(id, pwd); // SQL INJECTION 예시
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
-
+//            return user!=null; // SQL INJECTION 예시
         return user!=null && user.getPwd().equals(pwd);
 //        return "asdf".equals(id) && "1234".equals(pwd);
     }
