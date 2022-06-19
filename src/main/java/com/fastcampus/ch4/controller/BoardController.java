@@ -105,29 +105,26 @@ public class BoardController {
     }
 
     @GetMapping("/list")
-    public String list(Integer page, Integer pageSize, Model m, HttpServletRequest request) {
+    public String list(@ModelAttribute SearchCondition sc, Model m, HttpServletRequest request) {
         if(!loginCheck(request))
             return "redirect:/login/login?toURL="+request.getRequestURL();  // 로그인을 안했으면 로그인 화면으로 이동
 
-        if(page==null) page=1;
-        if(pageSize==null) pageSize=10;
-
         try {
+            int totalCnt = boardService.getSearchResultCnt(sc);
+            m.addAttribute("totalCnt", totalCnt);
 
-            int totalCnt = boardService.getCount();
-            PageHandler pageHandler = new PageHandler(totalCnt, page, pageSize);
+            PageHandler pageHandler = new PageHandler(totalCnt, sc);
 
-            Map map = new HashMap();
-            map.put("offset", (page-1)*pageSize);
-            map.put("pageSize", pageSize);
-
-            List<BoardDto> list =  boardService.getPage(map);
+            List<BoardDto> list =  boardService.getSearchResultPage(sc);
             m.addAttribute("list",list);
             m.addAttribute("ph", pageHandler);
-            m.addAttribute("page", page);
-            m.addAttribute("pageSize", pageSize);
+
+            Instant startOfToday = LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant();
+            m.addAttribute("startOfToday", startOfToday);
         } catch (Exception e) {
             e.printStackTrace();
+            m.addAttribute("msg", "LIST_ERR");
+            m.addAttribute("totalCnt", 0);
         }
         return "boardList"; // 로그인을 한 상태이면, 게시판 화면으로 이동
     }

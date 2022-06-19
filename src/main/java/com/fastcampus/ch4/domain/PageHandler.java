@@ -1,34 +1,42 @@
 package com.fastcampus.ch4.domain;
 
+import org.springframework.web.util.UriComponentsBuilder;
+
 public class PageHandler {
+//    private int page; // 현재 페이지
+//    private int pageSize; // 한 페이지의 크기
+//    private String option;
+//    private String keyword;
+
+    private SearchCondition sc;
+
     private int totalCnt; // 총 게시물 갯수
-    private int pageSize; // 한 페이지의 크기
+
     private int naviSize = 10; // 페이지 내비게이션의 크기
     private int totalPage; // 전체 페이지의 수
-    private int page; // 현재 페이지
     private int beginPage; // 내비게이션의 첫번째 페이지, 항상 1로 끝난다.
     private int endPage; // 내비게이션의 마지막 페이지, 항상 0으로 끝난다.
     private boolean showPrev; // 이전 페이지로 이동하는 링크를 보여줄 것인지의 여부
     private boolean showNext; // 다음 페이지로 이동하는 링크를 보여줄 것인지의 여부
+    public PageHandler(int totalCnt, SearchCondition sc) {
+        this.totalCnt = totalCnt;
+        this.sc = sc;
 
-    public PageHandler(int totalCnt, int page) {
-        this(totalCnt, page, 10);
+        doPaging(totalCnt, sc);
     }
 
-    public PageHandler(int totalCnt, int page, int pageSize) {
+    public void doPaging(int totalCnt, SearchCondition sc) {
         this.totalCnt = totalCnt;
-        this.page = page;
-        this.pageSize = pageSize;
 
-        totalPage = (int)Math.ceil(totalCnt / (double)pageSize);
-        beginPage = (page-1) / naviSize * naviSize + 1;
+        totalPage = (int)Math.ceil(totalCnt / (double)sc.getPageSize());
+        beginPage = (sc.getPage()-1) / naviSize * naviSize + 1;
         endPage = Math.min(beginPage + naviSize - 1, totalPage);
         showPrev = beginPage != 1;
         showNext = endPage != totalPage;
     }
 
     void print() {
-        System.out.println("page = " + page);
+        System.out.println("page = " + sc.getPage());
         System.out.print(showPrev ? "[PREV] " : "");
         for(int i= beginPage; i <= endPage; i++) {
             System.out.print(i +" ");
@@ -39,11 +47,10 @@ public class PageHandler {
     @Override
     public String toString() {
         return "PageHandler{" +
-                "totalCnt=" + totalCnt +
-                ", pageSize=" + pageSize +
+                "sc=" + sc +
+                ", totalCnt=" + totalCnt +
                 ", naviSize=" + naviSize +
                 ", totalPage=" + totalPage +
-                ", page=" + page +
                 ", beginPage=" + beginPage +
                 ", endPage=" + endPage +
                 ", showPrev=" + showPrev +
@@ -51,75 +58,69 @@ public class PageHandler {
                 '}';
     }
 
-    public int getTotalCnt() {
-        return totalCnt;
-    }
 
-    public void setTotalCnt(int totalCnt) {
-        this.totalCnt = totalCnt;
-    }
 
-    public int getPageSize() {
-        return pageSize;
-    }
+        public SearchCondition getSc() {
+            return sc;
+        }
 
-    public void setPageSize(int pageSize) {
-        this.pageSize = pageSize;
-    }
+        public void setSc(SearchCondition sc) {
+            this.sc = sc;
+        }
 
-    public int getNaviSize() {
-        return naviSize;
-    }
+        public int getTotalCnt() {
+            return totalCnt;
+        }
 
-    public void setNaviSize(int naviSize) {
-        this.naviSize = naviSize;
-    }
+        public void setTotalCnt(int totalCnt) {
+            this.totalCnt = totalCnt;
+        }
 
-    public int getTotalPage() {
-        return totalPage;
-    }
+        public int getNaviSize() {
+            return naviSize;
+        }
 
-    public void setTotalPage(int totalPage) {
-        this.totalPage = totalPage;
-    }
+        public void setNaviSize(int naviSize) {
+            this.naviSize = naviSize;
+        }
 
-    public int getPage() {
-        return page;
-    }
+        public int getTotalPage() {
+            return totalPage;
+        }
 
-    public void setPage(int page) {
-        this.page = page;
-    }
+        public void setTotalPage(int totalPage) {
+            this.totalPage = totalPage;
+        }
 
-    public int getBeginPage() {
-        return beginPage;
-    }
+        public int getBeginPage() {
+            return beginPage;
+        }
 
-    public void setBeginPage(int beginPage) {
-        this.beginPage = beginPage;
-    }
+        public void setBeginPage(int beginPage) {
+            this.beginPage = beginPage;
+        }
 
-    public int getEndPage() {
-        return endPage;
-    }
+        public int getEndPage() {
+            return endPage;
+        }
 
-    public void setEndPage(int endPage) {
-        this.endPage = endPage;
-    }
+        public void setEndPage(int endPage) {
+            this.endPage = endPage;
+        }
 
-    public boolean isShowPrev() {
-        return showPrev;
-    }
+        public boolean isShowPrev() {
+            return showPrev;
+        }
 
-    public void setShowPrev(boolean showPrev) {
-        this.showPrev = showPrev;
-    }
+        public void setShowPrev(boolean showPrev) {
+            this.showPrev = showPrev;
+        }
 
-    public boolean isShowNext() {
-        return showNext;
-    }
+        public boolean isShowNext() {
+            return showNext;
+        }
 
-    public void setShowNext(boolean showNext) {
-        this.showNext = showNext;
+        public void setShowNext(boolean showNext) {
+            this.showNext = showNext;
+        }
     }
-}

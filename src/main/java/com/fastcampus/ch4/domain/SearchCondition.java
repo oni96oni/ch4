@@ -1,5 +1,7 @@
 package com.fastcampus.ch4.domain;
 
+import org.springframework.web.util.UriComponentsBuilder;
+
 public class SearchCondition {
     private Integer page = 1;
     private Integer pageSize = 10;
@@ -15,6 +17,18 @@ public class SearchCondition {
         this.option = option;
     }
 
+    public String getQueryString(Integer page) {
+        // ?page=1&pageSize=10&option=T&keyword="title" 이렇게 일일이 만들어 주기가 귀찮아서 자동적으로 쿼리스트링을 만들어줘서 반환하려고한다!
+        return UriComponentsBuilder.newInstance()
+                .queryParam("page", page)
+                .queryParam("pageSize",pageSize)
+                .queryParam("option", option)
+                .queryParam("keyword", keyword)
+                .build().toString();
+    }
+    public String getQueryString() {
+        return getQueryString(page); //코드중복을 처리하기위해 메소드불러왔다.
+    }
 
     public Integer getPage() {
         return page;
@@ -54,5 +68,16 @@ public class SearchCondition {
 
     public void setOption(String option) {
         this.option = option;
+    }
+
+    @Override
+    public String toString() {
+        return "SearchCondition{" +
+                "page=" + page +
+                ", pageSize=" + pageSize +
+                ", offset=" + offset +
+                ", keyword='" + keyword + '\'' +
+                ", option='" + option + '\'' +
+                '}';
     }
 }
