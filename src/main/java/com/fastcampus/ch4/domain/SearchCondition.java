@@ -5,7 +5,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class SearchCondition {
     private Integer page = 1;
     private Integer pageSize = 10;
-    private Integer offset = 0;
+//    private Integer offset = 0; 있으면 계속 관리해줘야하기 때문에 없애버린다. page, pageSize로만 계산하게끔 해주자
     private String keyword = "";
     private String option = "";
 
@@ -47,11 +47,7 @@ public class SearchCondition {
     }
 
     public Integer getOffset() {
-        return offset;
-    }
-
-    public void setOffset(Integer offset) {
-        this.offset = offset;
+        return (page-1)*pageSize;
     }
 
     public String getKeyword() {
@@ -75,7 +71,7 @@ public class SearchCondition {
         return "SearchCondition{" +
                 "page=" + page +
                 ", pageSize=" + pageSize +
-                ", offset=" + offset +
+                ", offset=" + getOffset() +
                 ", keyword='" + keyword + '\'' +
                 ", option='" + option + '\'' +
                 '}';

@@ -105,7 +105,7 @@ public class BoardController {
     }
 
     @GetMapping("/list")
-    public String list(@ModelAttribute SearchCondition sc, Model m, HttpServletRequest request) {
+    public String list(SearchCondition sc, Model m, HttpServletRequest request) {
         if(!loginCheck(request))
             return "redirect:/login/login?toURL="+request.getRequestURL();  // 로그인을 안했으면 로그인 화면으로 이동
 
@@ -120,7 +120,7 @@ public class BoardController {
             m.addAttribute("ph", pageHandler);
 
             Instant startOfToday = LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant();
-            m.addAttribute("startOfToday", startOfToday);
+            m.addAttribute("startOfToday", startOfToday.toEpochMilli());
         } catch (Exception e) {
             e.printStackTrace();
             m.addAttribute("msg", "LIST_ERR");
