@@ -1,0 +1,18 @@
+댓글 기능 구현(1) - DAO와 Service의 작성
+    1. 댓글 기능 구현 순서 (1~5 백엔드, 6 프론트엔드)
+        1.DB테이블 생성
+        2.Mapper XML 작성
+            sql문으로 crud작성해야한다.
+        3.DAO작성 & 테스트
+        4.Service 작성 & 테스트
+        5.컨트롤러 작성 & 테스트
+        6.뷰(UI)작성 & 테스트
+
+    이 순서로 개발을 진행하는게 보통 한단계마다 테스트 진행
+        1.DB
+        2.Mybatis
+        3.@Repository
+        4.@Service
+        5.@Controller
+        6.뷰(UI)
+
