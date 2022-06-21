@@ -16,3 +16,14 @@
         5.@Controller
         6.뷰(UI)
 
+    필드주입 @Autowired 보다 생성자 주입을 더 권유한다! 깜박할수 있으니까
+
+    10강에서 한것정리
+        1.DB Table 제작
+        2.Mapper Xml 제작 - SQL문 작성
+        3.DAO작성 테스트 , DTO, TEST
+        4.Service작성 테스트, Test tx Test
+
+        다음강
+        5.Controller작성 test
+        6.UI 뷰
