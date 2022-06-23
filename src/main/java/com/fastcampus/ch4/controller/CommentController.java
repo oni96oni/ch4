@@ -26,11 +26,12 @@ public class CommentController {
 //    }
 
     // 댓글을 수정하는 메서드
-    @PatchMapping("/comments/{cno}") // /ch4/comments?bno=1085 PATCH
-    public ResponseEntity<String> modify(@PathVariable Integer cno, @RequestBody CommentDto dto) {
+    @PatchMapping("/comments/{cno}") // /ch4/comments/70 PATCH
+    public ResponseEntity<String> modify(@PathVariable Integer cno, @RequestBody CommentDto dto, HttpSession session) {
         //        String commenter = (String)session.getAttribute("id");
-        dto.setCno(cno);
-
+        String commenter = "asdf";
+        dto.setCommenter(commenter);
+        dto.setBno(cno);
         System.out.println("dto = " + dto);
 
         try {
@@ -94,6 +95,7 @@ public class CommentController {
         List<CommentDto> list = null;
         try {
              list = service.getList(bno);
+            System.out.println("list = " + list);
             return new ResponseEntity<List<CommentDto>>(list, HttpStatus.OK); // 200
         } catch (Exception e) {
             e.printStackTrace();
