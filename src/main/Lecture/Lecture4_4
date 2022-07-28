@@ -1,2 +1,13 @@
 게시물 목록 화면과 페이징 - TDD(2)
+    dao를 구현한 뒤에 ★테스트! 통과하면 service만들기
+
+    service는 dao를 주입받아야 한다. 컨트롤러의 명령을 받아서 db에 접근하기 위한것이 service니까! 하지만 db에 직접적인 접근은 dao가 한다.
+
+    tx처리란?? 앞에서 배웠던것처럼 여러 메서드를 로직상 하나의 트랜젝션으로 처리해야할때! 그때 둘다 ok면 commit 하나라도 안되면 rollback하는것 이런것을 tx처리라 한다.
+
+    기본적으로 BoardController는 글을 쓰기위해서 로그인이 되어있는지 확인해야한다.
+        여기서는 loginCheck라는 메서드를 만들었고 그 안의 로직은 세션을 통해서 확인, 세션에 id가 있으면 true, 없으면 false
+
+    controller는 service를 주입받는다. service는 dao를 주입받는다. 서로서로 주입받아서 요청, 데이터를 전달.
+
 
