@@ -1,0 +1,126 @@
+MyBatis의 소개와 설정
+    1.MyBatis란?
+        SQL Mapping Framework - Easy & Simple
+            자바코드하고 SQL을 Mapping 해준다는 뜻!
+            SQL을 별도의 XML로 분리, 분리해놓고 자바코드에서 xml에 있는 sql을 간단하게 사용할 수 있게 끔 만들었다.
+
+            JPA어려운 이유 1. OOP 2. SQL & DB Modeling, SpringBoot와 세트
+
+        자바 코드로부터 SQL문을 분리해서 관리
+
+        매개변수 설정과 쿼리 결과를 읽어오는 코드를 제거
+            자바코드에서는 sql을 설정하려고 매개변수같은 설정들 (ex : setString(), getString() 등등) 을 제거해서
+
+        작성할 코드가 줄어서 생산성 향상 & 유지 보수 편리
+
+        (예시코드 - 기존)
+        public int insertUser(User user) {
+            int rowCnt = FAIL;
+
+            Connection conn = null;
+            preparedStatement pstmt = null;
+
+            String sql = "insert int user_info values( ?, ?, ?, ?, ?, ?, new())";
+
+            try {
+                conn = ds.getConnection();
+                pstmt = conn.prepareStatement(sql);
+                pstmt.setString(1, user.getId());
+                pstmt.setString(2, user.getPassword());
+                pstmt.setString(3, user.getName());
+                pstmt.setString(4, user.getEmail());
+                pstmt.setString(5, user.getPhone());
+                pstmt.setString(6, user.getAddress());
+                return pstmt.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } finally {
+                close(pstmt, conn);
+            }
+        }
+
+        (예시코드 - xml설정파일)
+        <?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        <mapper namespace="com.fastcampus.ch4.dao.UserMapper">
+            <insert id="insertUser" parameterType="com.fastcampus.ch4.domain.UserDto">
+                insert into user_info
+                values(#{id}, #{password}, #{name}, #{email}, #{phone}, #{address})
+            </insert>
+        </mapper>
+
+        (예시코드 - 자바코드)
+        @Repository
+        public class UserDaoImpl implements UserDao {
+            @Autowired
+            private SqlSession session;
+            private static String namespace = "com.fastcampus.ch4.dao.UserMapper.";
+
+            @Override
+            public int insertUser(User user) {
+                return session.insert(namespace+"insert", user);
+            }
+        }
+
+        이렇게 자바코드와 sql문이 섞여있는것을 분리!
+            xml문서에다가 sql만 따로 떼어낸다. 그러면 자바코드도 간단해지고 관심사도 분리할 수 있다.
+
+    2.SqlSessionFactoryBean과 SqlSessionTemplate
+        Mybatis에는 SqlSessionFactory가 있는데, 우리가 필요한 SqlSession을 제공해주는 역할을 한다.
+        SqlSessionFactory - SqlSession을 생성해서 제공
+            openSession() 호출하면 SqlSession을 만들어준다.
+        SqlSession - SQL 명령을 수행하는데 필요한 메서드 제공
+            둘다 인터페이스로 mybatis모듈이 제공, 이 인터페이스들을 구현한것이 SqlSessionFactoryBean, SqlSessionTemplate이다.
+
+        mybatis-spirng이 제공
+
+        <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+            <property name="dataSource" ref="dataSource"/>
+            <property name="configLocation"  value="classpath:mybatis-config.xml"/>
+            <property name="mapperLocations" value="classpath:mapper/*Mapper.xml"/>
+        </bean>
+
+        <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+            <constructor-arg ref="sqlSessionFactory"/>
+        </bean>
+        위 처럼 빈등록을 해주어야 한다.(root-context.xml에다가)
+
+        SqlSessionFactoryBean - SqlSessionFactory를 Spring에서 사용하기 위한 빈! - root-context.xml에 빈등록을 해야한다.
+            factory bean 등록할때 mapper xml위치를 지정해주어야 한다. mapperXML은 sql들어있는 곳
+        SqlSessionTemplate - SQL명령을 수행하는데 필요한 메서드 제공 ★thread-safe -> SqlSessionTemplate를 이용해서 DAO를 작성하는데
+            DAO끼리 SqlSessionTemplate을 공유한다! 멀티 쓰레드에 안전하기 때문에 여러 쓰레드가 동시에 접근해도 괜찮다.
+                어떻게 SqlSessionTemplate이 thread-safe한걸까??
+
+    3.SqlSession의 주요 메서드
+        int insert(String statement)                    insert문을 실행하고, insert된 행의 갯수를 반환
+            value에 들어갈 값이 없으면 Object parameter는 생략가능하다. 하지만 대부분의 경우에 아래와 같이 Object도 입력한다.
+        int insert(String statement,Object parameter)
+            Object parameter는 insert문의 value값들(?,?,?,...)에 들어가는 값들이며, User객체, Map도 가능하다
+        int delete(String statement)                    delete문을 실행하고, delete된 행의 갯수를 반환
+        int delete(String statement,Object parameter)
+        int update(String statement)                    update문을 실행하고, update된 행의 갯수를 반환
+        int update(String statement,Object parameter)
+            int인 이유 : DB에 영향을 준 row수!
+        T selectOne(String statement)                               하나의 행을 반환하는 select에 사용, parameter로 SQL에 binding될 값 제공
+        T selectOne(String statement,Object parameter)
+        List<E> selectList(String statement)                        여러 행을 반환하는 select에 사용, parameter로 SQL에 binding될 값 제공
+        List<E> selectList(String statement,Object parameter)
+        Map<K,V> selectMap(String statement, String keyCol)         여러 행을 반환하는 select에 사용, keyCol에 Map의 Key로 사용할 컬럼 지정
+        Map<K,V> selectMap(String statement, String keyCol,Object parameter)
+
+    4.Mapper XML의 작성
+        자바코드에서 xml로 연결
+        namespace는 mapper들 끼리 구분만 되면 된다. mapper인터페이스가 있으면 컴파일타임에 조금 더 정확하게 체크 해줄 수 있다. (실무에서 사용!)
+            mapper인터페이스를 설정하는 방법??
+
+        parameterType은 없으면 안쓰고, 생략도 가능하다 하지만 왠만하면 써주는것이 좋다.
+
+        BoardDto에는 getter가 있어야지 DTO타입을 매개변수로 주었을때 스프링이 알아서 getter를 사용해서 값을 입력해준다.
+
+        parameterType에서 원래는 java.lang.Integer인데 mybatis에서 내부적으로 int라고 별명을 지어놓았다. 실제로는 Integer타입이다.
+
+    5.<typeAliases>로 이름 짧게 하기 -> 별명짓기
+        Aliases가 별명이란뜻!
+        너무 긴 Type들을 대신해서 짧게하기 위해서 별명을 붙일 수 있게 기능을 만듬
+        mybatis-config.xml파일에 alias = 별명 type = 실제이름 식으로 태그입력하면된다
+        별명은 대소문자 구별x 실제이름은 구별o(자바는 대소문자 구분하니까 당연한것)
