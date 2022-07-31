@@ -1,19 +1,22 @@
 게시판 읽기, 쓰기, 수정, 삭제 구현(2)
     4.게시물 쓰기 기능의 구현
+        읽기와 쓰기는 같이 구현을 해서 나중에 유지 보수가 편하게 할거야 구별은 mod값으로해준다.
         글쓰기 버튼으로 get요청 -> 컨트롤러에 write() 그 뒤로 board.jsp파일을 보여준다.
         onclick 버튼 클릭시 발생하는 이벤트, 원래 함수를 지정해주어야해
 
-        글쓰기 등록 누르면 @PostMapping 되어있는 write() 컨트롤러에서 실행 db에서 write한뒤 list() 메서드 실행
+        글쓰기 등록 누르면 <form>에 있는 내용을 @PostMapping 되어있는 write() 컨트롤러에서 실행하면 boardService.write(boardDto)실행 해서 db에 boardDto내용을 저장한다.
+        그 다음 list()메서드를 호출한뒤 boardService.getPage(map)을 호출해서 페이지를 보여준다.
+
         redirect는 항상 GET이다. 보드페이지 불러온뒤 보여준다.
 
     5.게시물 수정 기능의 구현
         읽기를 하다가 수정을하면 제목이 바뀌고 readonly에서 readonly해지! 그래서 수정할 수 있게끔한다.
-        수정에서 등록버튼으로 바뀐다.
+        수정에서 등록버튼으로 바꿔준다.
 
         attribute vs property 둘다 번역하면 속성이지만 용어가 다르다.
-        태그하나하나를 브라우저가 읽으면 생성을 하는데 거기에 "title", "text", 이런식으로 생성자의 값들이 들어간다.
+        태그하나하나를 브라우저가 읽으면 생성을 하는데(new InputElement()) 거기에 "title", "text", 이런식으로 생성자의 값들이 들어간다.
 
         iv같은것이 property - 생성된 객체의 속성
         태그안에 써주는게 attribute
 
-        등록버튼 누르면 controller에 modify()메서드 호출하고 db에서 modify하고 list로 페이지 불러오고 redirect로 boardList.jsp 보여주면서 끝난다.
+        등록버튼 누르면 controller에 modify()메서드 post로 호출하고 db에서 modify하고 list로 페이지 불러오고 redirect로 boardList.jsp 보여주면서 끝난다.

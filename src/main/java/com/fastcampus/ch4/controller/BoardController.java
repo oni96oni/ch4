@@ -50,26 +50,25 @@ public class BoardController {
 
             if(rowCnt!=1) {
                 throw new Exception("Write failed");
-
             }
-            rattr.addFlashAttribute("msg", "WRT_OK"); //세션을 이용한 1회성 저장! url에 안남게 사용한다.
+            rattr.addFlashAttribute("msg", "WRT_OK"); // 세션을 이용한 1회성 저장! url에 안남게 사용한다.
 
             return "redirect:/board/list";
         } catch (Exception e) {
             e.printStackTrace();
-            m.addAttribute(boardDto);
-            m.addAttribute("msg", "WRT_ERR");
+            m.addAttribute(boardDto); // 작성 실패시 모델을 이용해서 기존에 작성해놓은 값을 돌려놓는다. board.jsp에게 주는것!
+            m.addAttribute("msg", "WRT_ERR"); // 메세지를 줘서 왜 진행이 안되는지 알려준다.
             return "board";
         }
     }
     @GetMapping("/write")
     public String write(Model m) {
         m.addAttribute("mode", "new");
-        return "board"; // 읽기와 쓰기에 사용. 쓰기에 사용할때는 mode = new
+        return "board"; // 빈화면을 보여주기만 하면된다! board.jsp를 읽기와 쓰기에 사용. 쓰기에 사용할때는 mode = new
     }
 
     @PostMapping("/remove")
-    public String remove(Integer bno, Integer page, Integer pageSize, Model m,HttpSession session, RedirectAttributes rattr) {
+    public String remove(Integer bno, Integer page, Integer pageSize, Model m, HttpSession session, RedirectAttributes rattr) { // 메세지 한번만 나올때 쓰는것이 RedirectAttributes
         String writer = (String)session.getAttribute("id");
         try {
             m.addAttribute("page", page);
@@ -89,10 +88,10 @@ public class BoardController {
         return "redirect:/board/list";
     }
     @GetMapping("/read")
-    public String read(Integer bno, Integer page, Integer pageSize, Model m) {
+    public String read(Integer bno, Integer page, Integer pageSize, Model m) { // view로 전달하기위한 Model이 필요하다.
         try {
             BoardDto boardDto = boardService.read(bno);
-//            m.addAttribute("boardDto", boardDto): // 아래 문장과 동일
+//            m.addAttribute("boardDto", boardDto): // 아래 문장과 동일, 생략하면 타입의 첫글자를 소문자로한것으로 값을 잡는다.
             m.addAttribute(boardDto);
             m.addAttribute("page", page);
             m.addAttribute("pageSize", pageSize);

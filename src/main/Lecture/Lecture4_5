@@ -1,4 +1,4 @@
-게시판 읽기, 쓰기, 수정, 삭제 구현
+게시판 읽기, 쓰기, 수정, 삭제 구현(1)
     1. 기능별 URI 정의
         작업      URI                  HTTP메서드        설명
         읽기  /board/read?bno=번호         GET         지정된 번호의 게시물을 보여준다.
@@ -9,23 +9,34 @@
              /board/modify               POST        수정된 게시물을 저장한다.
 
         URL - 리소스 경로, 전체 경로인 경우
-        URN - 리소스에 이름을 붙임
+        URN - 리소스에 이름을 붙임(유일한 이름)
         URI - URL과 URN 두개를 통칭, URL 일부만 적을경우 URI라고 함
 
     2.게시물 읽기 기능의 구현
-        제목 클릭 -> 링크를 통해 게시물 번호를 가지고 읽기 요청 -> READ()가 게시물 번호를 받아서 boardService에 요청 -> DB가 boardDto에 정보를 담아서 줌 -> 그걸 읽어서 jsp에 뿌려서 화면에 보여주면된다.
+        제목(title) 클릭 -> 링크를 통해 게시물 번호를 가지고 읽기 요청 -> READ(Integer bno)가 게시물 번호를 받아서 boardService에 read(bno)요청 ->
+        DB가 boardDto에 정보를 담아서 줌 -> 그걸 읽어서 jsp에 뿌려서 화면에 보여주면된다.
 
-        목록버튼을 누르면 GET요청으로 list() DB에서 page구해서 List<BoardDto>
-            그전에 보고있던 목록으로 가야함으로 page, pageSize같이 보내서 요청한다.
+        목록버튼을 누르면 BoardController로 GET요청이 가게만든다. /board/list, 그러면 list()가 호출이 되고 boardService를 통해서
+        getPage(map)호출 DB에서 가져온 page를 List<BoardDto>에 담겨저서 반환된다. 그거를 가지고 boardList.jsp를 통해서 보여준다.
+        ★그전에 보고있던 목록으로 가야함으로 page, pageSize같이 보내서 요청한다.
 
     3.게시물 삭제 기능의 구현
-        수정, 삭제는 보는 사람이 작성자 일때만!
-        POST요청에 로그인 사람의 아이디(writer)까지 같이 넘겨주어서 맞으면 삭제하도록!
-        게시물이 삭제되면 redirect로 List로 이동해서 다시 컨트롤러가 DB에 삭제요청청
+        board게시판에서 삭제버튼을 누르면 BoardController로 POST요청이 가게만든다. /board/remove, 그러면 remove(Integer bno)가 호출이 되고 boardService를 통해서
+        remove(bno)호출한다. 그러면 boardService에서 bno를 받아서 remove(bno)요청한다. 그러면 DB에서 bno를 받아서 삭제한다.
+        그러고 게시물이 삭제되었다는 메시지를 보여준다.
+
+        수정, 삭제는 보는 사람이 작성자 일때만 이 버튼이 보여져야한다.
+        POST요청에 로그인 사람의 아이디(writer)까지 같이 넘겨주어서 번호와 작성자가 둘다 맞으면 삭제하도록!
+        게시물이 삭제되면 redirect:/board/list로 List로 이동해서 다시 컨트롤러가 DB에 삭제요청청
 
         무언가 메세지를 한번만 띄울때 새로고침해도 그뒤부터는 목록만 뜨게 할때는 RedirectAttributes rattr 사용한다.
+        session을 이용! 세션에 잠깐 저장했다가 잠깐 쓰고 지워버리는것! 한번 쓰고 지우니까 부담도 적다.
+        그래서 jsp 값에 param도 지워주는것.
 
-        sql injection
+        sql injection공격이란
+
+        aaaa' or 1=1; #' -> 다른것들은 주석처리해버리고 무조건 로그인이 되도록! 1=1은 무조건 참인데 or로 연결해버리니 무조건 참으로 인식해서 로그인이 되게끔한다.
+
         Statement말고 prepareStatement를 쓰고 ? 를 통해서 sql injection이 안되게끔 하자
 
 

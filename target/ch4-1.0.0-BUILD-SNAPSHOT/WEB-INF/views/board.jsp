@@ -102,7 +102,7 @@
   </form>
 </div>
 <script>
-  $(document).ready(function(){
+  $(document).ready(function(){ // main()
     let formCheck = function() {
       let form = document.getElementById("form");
       if(form.title.value=="") {

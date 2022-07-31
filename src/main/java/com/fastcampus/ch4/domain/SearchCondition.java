@@ -4,10 +4,13 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 public class SearchCondition {
     private Integer page = 1;
+    // 기본값을 주면 나중에 컨트롤러에서 값을 받을때 값이 안들어오면 기본값을 사용한다.
     private Integer pageSize = 10;
-//    private Integer offset = 0; 있으면 계속 관리해줘야하기 때문에 없애버린다. page, pageSize로만 계산하게끔 해주자
+    // private Integer offset = 0; 있으면 계속 관리해줘야하기 때문에 없애버린다. page, pageSize로만 계산하게끔 해주자
     private String keyword = "";
+    // 검색어 저장
     private String option = "";
+    // 제목+내용, 제목, 내용 검색할것들을 선택하는 옵션
 
     public SearchCondition() {}
     public SearchCondition(Integer page, Integer pageSize, String keyword, String option) {

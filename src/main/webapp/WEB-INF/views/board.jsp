@@ -102,7 +102,7 @@
   </form>
 </div>
 <script>
-  $(document).ready(function(){
+  $(document).ready(function(){ // main()
     let formCheck = function() {
       let form = document.getElementById("form");
       if(form.title.value=="") {
@@ -136,7 +136,7 @@
         $("input[name=title]").attr('readonly', false);
         $("textarea").attr('readonly', false);
         $("#modifyBtn").html("<i class='fa fa-pencil'></i> 등록");
-        return;
+        return; //return안하면 전송까지 되버리니까 빠져나가야해
       }
       // 2. 수정 상태이면, 수정된 내용을 서버로 전송
       form.attr("action", "<c:url value='/board/modify${searchCondition.queryString}'/>");

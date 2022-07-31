@@ -162,7 +162,7 @@
   </ul>
 </div>
 <script>
-  let msg = "${msg}";
+  let msg = "${msg}"; //get방식이라 model에 있는게 parameter로 전달된다. 그런데 여기서는 param생략해도 가능??
   if(msg=="LIST_ERR")  alert("게시물 목록을 가져오는데 실패했습니다. 다시 시도해 주세요.");
   if(msg=="READ_ERR")  alert("삭제되었거나 없는 게시물입니다.");
   if(msg=="DEL_ERR")   alert("삭제되었거나 없는 게시물입니다.");

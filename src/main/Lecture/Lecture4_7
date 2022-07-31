@@ -2,20 +2,37 @@
     1.게시판 검색
         검색대상, 검색어, 검색버튼을 활용하여 검색기능구현
         검색기능 -> 동적쿼리작성능력이 필요해!
-        페이지 이동처리를 잘해야해.
+
+        검색할 대상을 뭘로 선택하느냐에 따라서 쿼리가 달라져야한다 -> 동적 쿼리
+        페이지 이동처리를 잘해야해. -> 이전 페이지로 이동할때 페이징까지 고려해서!
 
     2.MyBatis의 동적쿼리(1) - <sql>과 <inclute>
-        공통 부분을 <sql>로 정의하고 <include>로 포함시켜 재사용
+        공통 부분을 <sql>로 정의하고 <include>로 포함시켜 재사용 가능하다.
 
     2.MyBatis의 동적쿼리(2) - <if>
+        if문과 비슷하다.
+        where에 true값을 주고 조건을 and연산자로 연결하면 된다.
 
     2.MyBatis의 동적쿼리(2) - <choose> <when>
+        if else if 문과 비슷하다.
         와일드 카드 % % -> 여러글자 (0+)
                   _ ? -> 한글자 (1)
 
                   'title%' - title, title1 둘다 가능
                   'title_' - title x, title1 o -> 하나가 있어야하기 때문에
+                  %를 앞뒤로 붙이면 포함하는것을 검색한다.
 
     2.MyBatis의 동적쿼리(2) - <foreach>
+        <foreach collection="array" item="bno" open="(" close=")" separator=",">
+            #{bno}
+        </foreach>
+
+        where bno int ( 1, 2, 3 ) 이런식으로 만들어준다
+
         select * from board
         WHERE TRUE AND TITLE NOT LIKE concat('title1', '_'); -- title% 와 동일 와일드 카드 사용할때는 LIKE 사용
+
+        검색결과가 몇개인지 알아야 페이징이 가능하므로 sql문을 추가
+
+    실습
+        log4j 를이용해서 실행된 sql문을 로그로 찍어서 볼 수 있다.

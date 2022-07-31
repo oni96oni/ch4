@@ -7,6 +7,7 @@ public class PageHandler {
 //    private int pageSize; // 한 페이지의 크기
 //    private String option;
 //    private String keyword;
+//    이 4개의 iv를 하나로 묶는다 SearchCondition으로
 
     private SearchCondition sc;
 
